@@ -17,8 +17,6 @@ public class PaymentRequest {
     private String itemDescription;
     private String signature;
     
-    public PaymentRequest() {}
-    
     public String getMerchantId() { return merchantId; }
     public void setMerchantId(String merchantId) { this.merchantId = merchantId; }
     

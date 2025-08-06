@@ -1,8 +1,11 @@
 package com.recceda.payfast.model;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class SubscriptionRequest extends PaymentRequest {
     private String subscriptionType = "1";
-    private Integer billingDate;
+    private String billingDate;
     private Integer recurringAmount;
     private Integer frequency;
     private Integer cycles;
@@ -10,8 +13,12 @@ public class SubscriptionRequest extends PaymentRequest {
     public String getSubscriptionType() { return subscriptionType; }
     public void setSubscriptionType(String subscriptionType) { this.subscriptionType = subscriptionType; }
     
-    public Integer getBillingDate() { return billingDate; }
-    public void setBillingDate(Integer billingDate) { this.billingDate = billingDate; }
+    public String getBillingDate() { return billingDate; }
+    public void setBillingDate(String billingDate) { this.billingDate = billingDate; }
+    
+    public void setBillingDate(LocalDate date) {
+        this.billingDate = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
     
     public Integer getRecurringAmount() { return recurringAmount; }
     public void setRecurringAmount(Integer recurringAmount) { this.recurringAmount = recurringAmount; }

@@ -2,6 +2,7 @@ package com.recceda.payfast.model;
 
 import org.junit.Test;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import static org.junit.Assert.*;
 
 public class SubscriptionRequestTest {
@@ -25,13 +26,13 @@ public class SubscriptionRequestTest {
         SubscriptionRequest request = new SubscriptionRequest();
         
         request.setSubscriptionType("2");
-        request.setBillingDate(1);
+        request.setBillingDate("2024-01-15");
         request.setRecurringAmount(10000);
         request.setFrequency(3);
         request.setCycles(12);
         
         assertEquals("2", request.getSubscriptionType());
-        assertEquals(Integer.valueOf(1), request.getBillingDate());
+        assertEquals("2024-01-15", request.getBillingDate());
         assertEquals(Integer.valueOf(10000), request.getRecurringAmount());
         assertEquals(Integer.valueOf(3), request.getFrequency());
         assertEquals(Integer.valueOf(12), request.getCycles());
@@ -47,7 +48,7 @@ public class SubscriptionRequestTest {
     public void testSubscriptionRequestWithNullValues() {
         SubscriptionRequest request = new SubscriptionRequest();
         
-        request.setBillingDate(null);
+        request.setBillingDate((String) null);
         request.setRecurringAmount(null);
         request.setFrequency(null);
         request.setCycles(null);
@@ -71,7 +72,7 @@ public class SubscriptionRequestTest {
         
         // Subscription details
         request.setSubscriptionType("1");
-        request.setBillingDate(15);
+        request.setBillingDate(LocalDate.of(2024, 1, 15));
         request.setRecurringAmount(9999);
         request.setFrequency(3);
         request.setCycles(0); // Unlimited
@@ -82,7 +83,7 @@ public class SubscriptionRequestTest {
         assertEquals("Monthly Subscription", request.getItemName());
         assertEquals("subscriber@example.com", request.getEmailAddress());
         assertEquals("1", request.getSubscriptionType());
-        assertEquals(Integer.valueOf(15), request.getBillingDate());
+        assertEquals("2024-01-15", request.getBillingDate());
         assertEquals(Integer.valueOf(9999), request.getRecurringAmount());
         assertEquals(Integer.valueOf(3), request.getFrequency());
         assertEquals(Integer.valueOf(0), request.getCycles());

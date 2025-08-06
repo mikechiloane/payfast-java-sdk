@@ -1,5 +1,6 @@
 package com.recceda.payfast.util;
 
+import com.recceda.payfast.exception.HttpException;
 import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +10,7 @@ public class HttpUtilTest {
 
     @Test
     public void testPostWithValidParameters() {
-        // This test will fail in actual execution due to network call
-        // but demonstrates the expected usage
+
         Map<String, String> params = new HashMap<>();
         params.put("merchant_id", "10000100");
         params.put("merchant_key", "46f0cd694581a");
@@ -20,7 +20,7 @@ public class HttpUtilTest {
             String response = HttpUtil.post("https://httpbin.org/post", params);
             // In a real scenario, we'd mock this
             assertNotNull(response);
-        } catch (RuntimeException e) {
+        } catch (HttpException e) {
             // Expected when network is not available or URL is invalid
             assertTrue(e.getMessage().contains("HTTP request failed"));
         }
@@ -33,35 +33,31 @@ public class HttpUtilTest {
         try {
             String response = HttpUtil.post("https://httpbin.org/post", params);
             assertNotNull(response);
-        } catch (RuntimeException e) {
+        } catch (HttpException e) {
             assertTrue(e.getMessage().contains("HTTP request failed"));
         }
     }
     
-    @Test(expected = RuntimeException.class)
-    public void testPostWithInvalidUrl() {
+    @Test(expected = HttpException.class)
+    public void testPostWithInvalidUrl() throws HttpException {
         Map<String, String> params = new HashMap<>();
         params.put("test", "value");
         
         HttpUtil.post("invalid-url", params);
     }
     
-    @Test(expected = RuntimeException.class)
-    public void testPostWithNullUrl() {
+    @Test(expected = HttpException.class)
+    public void testPostWithNullUrl() throws HttpException {
         Map<String, String> params = new HashMap<>();
         HttpUtil.post(null, params);
     }
     
-    @Test
-    public void testPostWithNullParameters() {
-        try {
-            HttpUtil.post("https://httpbin.org/post", null);
-            fail("Should throw exception with null parameters");
-        } catch (Exception e) {
-            // Expected - either RuntimeException or NullPointerException
-            assertTrue(e instanceof RuntimeException || e instanceof NullPointerException);
-        }
+    @Test(expected = HttpException.class)
+    public void testPostWithNullParameters() throws HttpException {
+        HttpUtil.post("https://httpbin.org/post", null);
     }
+    
+
     
     @Test
     public void testPostParameterEncoding() {
@@ -74,7 +70,7 @@ public class HttpUtilTest {
             String response = HttpUtil.post("https://httpbin.org/post", params);
             // The post data should be properly encoded
             assertNotNull(response);
-        } catch (RuntimeException e) {
+        } catch (HttpException e) {
             assertTrue(e.getMessage().contains("HTTP request failed"));
         }
     }

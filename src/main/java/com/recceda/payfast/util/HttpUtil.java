@@ -1,5 +1,8 @@
 package com.recceda.payfast.util;
 
+import com.recceda.payfast.exception.HttpException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -8,8 +11,16 @@ import java.net.URL;
 import java.util.Map;
 
 public class HttpUtil {
+    private static final Logger log = LoggerFactory.getLogger(HttpUtil.class);
     
-    public static String post(String url, Map<String, String> params) {
+    public static String post(String url, Map<String, String> params) throws HttpException {
+        if (url == null || url.trim().isEmpty()) {
+            throw new HttpException("URL cannot be null or empty");
+        }
+        if (params == null) {
+            throw new HttpException("Parameters cannot be null");
+        }
+        
         try {
             URL urlObj = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) urlObj.openConnection();
@@ -37,7 +48,8 @@ public class HttpUtil {
             
             return response.toString();
         } catch (Exception e) {
-            throw new RuntimeException("HTTP request failed", e);
+            log.error("HTTP request failed for URL: {}", url, e);
+            throw new HttpException("HTTP request failed", e);
         }
     }
 }

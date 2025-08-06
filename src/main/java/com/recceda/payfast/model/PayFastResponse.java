@@ -1,22 +1,51 @@
 package com.recceda.payfast.model;
 
 public class PayFastResponse {
-    private boolean success;
-    private String message;
-    private String paymentUrl;
+    private final boolean requestCreated;
+    private final String statusMessage;
+    private final String payfastRedirectUrl;
+    private final String htmlForm;
+    private final String htmlFormPath;
     
-    public PayFastResponse(boolean success, String message) {
-        this.success = success;
-        this.message = message;
+    public PayFastResponse(boolean requestCreated, String statusMessage) {
+        this.requestCreated = requestCreated;
+        this.statusMessage = statusMessage;
+        this.payfastRedirectUrl = null;
+        this.htmlForm = null;
+        this.htmlFormPath = null;
     }
     
-    public PayFastResponse(boolean success, String message, String paymentUrl) {
-        this.success = success;
-        this.message = message;
-        this.paymentUrl = paymentUrl;
+    public PayFastResponse(boolean requestCreated, String statusMessage, String payfastRedirectUrl) {
+        this.requestCreated = requestCreated;
+        this.statusMessage = statusMessage;
+        this.payfastRedirectUrl = payfastRedirectUrl;
+        this.htmlForm = null;
+        this.htmlFormPath = null;
     }
     
-    public boolean isSuccess() { return success; }
-    public String getMessage() { return message; }
-    public String getPaymentUrl() { return paymentUrl; }
+    public PayFastResponse(boolean requestCreated, String statusMessage, String payfastRedirectUrl, String htmlForm) {
+        this.requestCreated = requestCreated;
+        this.statusMessage = statusMessage;
+        this.payfastRedirectUrl = payfastRedirectUrl;
+        this.htmlForm = htmlForm;
+        this.htmlFormPath = null;
+    }
+    
+    public PayFastResponse(boolean requestCreated, String statusMessage, String payfastRedirectUrl, String htmlForm, String htmlFormPath) {
+        this.requestCreated = requestCreated;
+        this.statusMessage = statusMessage;
+        this.payfastRedirectUrl = payfastRedirectUrl;
+        this.htmlForm = htmlForm;
+        this.htmlFormPath = htmlFormPath;
+    }
+    
+    // Getters
+    public boolean isSuccess() { return requestCreated; }
+    public boolean isRequestCreated() { return requestCreated; }
+    public String getMessage() { return statusMessage; }
+    public String getStatusMessage() { return statusMessage; }
+    public String getPaymentUrl() { return payfastRedirectUrl; }
+    public String getPayfastRedirectUrl() { return payfastRedirectUrl; }
+    public String getHtmlForm() { return htmlForm; }
+    public String getHtmlFormPath() { return htmlFormPath; }
 }
