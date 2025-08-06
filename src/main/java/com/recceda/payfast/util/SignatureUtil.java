@@ -164,14 +164,6 @@ public class SignatureUtil {
     }
 
     public static boolean validateSignature(Map<String, String> params, String signature, String passphrase) throws SignatureException {
-        return validateSignature(params, signature, passphrase, false);
-    }
-    
-    public static boolean validateITNSignature(Map<String, String> params, String signature, String passphrase) throws SignatureException {
-        return validateSignature(params, signature, passphrase, true);
-    }
-    
-    private static boolean validateSignature(Map<String, String> params, String signature, String passphrase, boolean isITN) throws SignatureException {
         if (params == null) {
             throw new SignatureException("Parameters cannot be null");
         }
@@ -180,52 +172,19 @@ public class SignatureUtil {
         }
         
         try {
-            Map<String, String> orderedParams;
-            if (isITN) {
-                // For ITN validation, use PayFast ITN-specific parameter ordering
-                orderedParams = getParametersInPayFastOrderForValidation(params);
-            } else {
-                // For regular validation, use alphabetical ordering (backward compatibility)
-                orderedParams = new TreeMap<>(params);
-                orderedParams.remove("signature");
-            }
+            Map<String, String> sortedParams = new TreeMap<>(params);
+            sortedParams.remove("signature");
             
             StringBuilder queryString = new StringBuilder();
-            boolean first = true;
-            
-            for (Map.Entry<String, String> entry : orderedParams.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                
-                if (isITN) {
-                    // For ITN validation, include empty parameters as PayFast includes them in signature generation
-                    // Only exclude signature field itself and null values
-                    if (value != null && !"signature".equals(key)) {
-                        if (!first) queryString.append("&");
-                        // Use quote_plus style URL encoding
-                        String encodedValue = urlEncodeQuotePlus(value.trim());
-                        queryString.append(key).append("=").append(encodedValue);
-                        first = false;
-                    }
-                } else {
-                    // For regular validation, filter out blank values (backward compatibility)
-                    if (value != null && !value.trim().isEmpty() && !"signature".equals(key)) {
-                        if (!first) queryString.append("&");
-                        // Use quote_plus style URL encoding
-                        String encodedValue = urlEncodeQuotePlus(value.trim());
-                        queryString.append(key).append("=").append(encodedValue);
-                        first = false;
-                    }
-                }
+            for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
+                if (queryString.length() > 0) queryString.append("&");
+                queryString.append(entry.getKey()).append("=").append(entry.getValue());
             }
             
-            // Add passphrase at the end if provided
-            if (passphrase != null && !passphrase.trim().isEmpty()) {
-                if (!first) queryString.append("&");
-                queryString.append("passphrase=").append(passphrase.trim());
+            if (passphrase != null && !passphrase.isEmpty()) {
+                queryString.append("&passphrase=").append(passphrase);
             }
             
-            log.debug("Validation signature string: {}", queryString.toString());
             return md5Hash(queryString.toString()).equals(signature);
         } catch (Exception e) {
             log.error("Failed to validate signature", e);
@@ -233,45 +192,7 @@ public class SignatureUtil {
         }
     }
     
-    /**
-     * Get parameters in PayFast expected order for validation
-     * This ensures signature validation uses the same parameter order as PayFast's signature generation
-     */
-    private static Map<String, String> getParametersInPayFastOrderForValidation(Map<String, String> params) {
-        Map<String, String> orderedParams = new LinkedHashMap<>();
-        
-        // PayFast expected parameter order for ITN - this is different from payment form order
-        // ITN signatures use the order that parameters appear in the ITN data
-        String[] expectedOrder = {
-            // ITN typically starts with merchant payment ID
-            "m_payment_id", "pf_payment_id", "payment_status", 
-            "item_name", "item_description", 
-            "amount_gross", "amount_fee", "amount_net",
-            // Empty custom fields in ITN order
-            "custom_str1", "custom_str2", "custom_str3", "custom_str4", "custom_str5",
-            "custom_int1", "custom_int2", "custom_int3", "custom_int4", "custom_int5",
-            // Buyer details (often empty in ITN)
-            "name_first", "name_last", "email_address",
-            // Merchant ID comes last in ITN order
-            "merchant_id"
-        };
-        
-        // Add parameters in PayFast expected order
-        for (String paramName : expectedOrder) {
-            if (params.containsKey(paramName)) {
-                orderedParams.put(paramName, params.get(paramName));
-            }
-        }
-        
-        // Add any remaining parameters that weren't in the expected order
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            if (!orderedParams.containsKey(entry.getKey()) && !"signature".equals(entry.getKey())) {
-                orderedParams.put(entry.getKey(), entry.getValue());
-            }
-        }
-        
-        return orderedParams;
-    }
+
     
     private static String md5Hash(String input) throws SignatureException {
         if (input == null) {

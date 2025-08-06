@@ -3,7 +3,7 @@ package com.recceda.payfast.handler;
 import com.recceda.payfast.config.PayFastConfig;
 import com.recceda.payfast.exception.ValidationException;
 import com.recceda.payfast.model.NotificationData;
-import com.recceda.payfast.util.HttpUtil;
+
 import com.recceda.payfast.util.SignatureUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,16 +32,8 @@ public class ITNHandler {
         }
         
         try {
-            if (!SignatureUtil.validateITNSignature(params, signature, config.getPassphrase())) {
-                log.warn("ITN validation failed: Invalid signature");
-                return false;
-            }
-            
-            String validationUrl = config.getBaseUrl() + "/eng/query/validate";
-            String response = HttpUtil.post(validationUrl, params);
-            boolean isValid = "VALID".equals(response.trim());
-            
-            log.info("ITN validation result: {}", isValid ? "VALID" : "INVALID");
+            boolean isValid = SignatureUtil.validateSignature(params, signature, config.getPassphrase());
+            log.info("ITN signature validation: {}", isValid ? "VALID" : "INVALID");
             return isValid;
         } catch (Exception e) {
             log.error("ITN validation failed", e);
