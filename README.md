@@ -234,7 +234,3 @@ MIT License - see LICENSE file for details
 3. Add tests for new functionality  
 4. Ensure all tests pass
 5. Submit a pull request
-
----
-
-**Note**: This SDK has been thoroughly tested and validated against PayFast's official requirements. The signature generation matches PayFast's Python implementation exactly, ensuring full compatibility with their payment gateway.
