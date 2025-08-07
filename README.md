@@ -1,17 +1,19 @@
 # PayFast Java SDK
 
+![PayFast SDK Logo](payfast-sdk-logo.png)
+
 A comprehensive Java SDK for PayFast payment gateway integration with proper signature validation and PayFast-compliant URL encoding.
+
+**Developer:** Mike Chiloane  
+**Email:** mike@mikechiloane.co.za
 
 ## Features
 
 - ✅ **One-off payments** - Single payment transactions
-- ✅ **Subscription payments** - Recurring billing support  
 - ✅ **Automatic signature generation** - Python-compatible URL encoding
-- ✅ **ITN validation** - Instant Transaction Notification handling
 - ✅ **Sandbox/Production modes** - Easy environment switching
 - ✅ **Comprehensive error handling** - Specific exceptions for different scenarios
-- ✅ **HTML form generation** - Ready-to-use payment forms
-- ✅ **Full PayFast compliance** - Matches official Python implementation
+- ✅ **Full PayFast compliance** - Matches official implementation
 
 ## Installation
 
@@ -20,15 +22,15 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>com.recceda</groupId>
     <artifactId>payfast-java-sdk</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
 ## Quick Start
 
-### 1. Configuration
+### 1. Basic Setup
 ```java
-import com.recceda.payfast.PayFastClient;
+import com.recceda.payfast.PayFastService;
 import com.recceda.payfast.config.PayFastConfig;
 
 // Sandbox configuration
@@ -39,8 +41,14 @@ PayFastConfig config = new PayFastConfig(
     true                  // sandbox mode
 );
 
-PayFastClient client = new PayFastClient(config);
+PayFastService service = new PayFastService(config);
 ```
+
+### 2. One-off Payment
+```java
+import com.recceda.payfast.model.PaymentRequest;
+import com.recceda.payfast.model.PayFastFormData;
+import java.math.BigDecimal;
 
 ### 2. One-off Payment
 ```java
@@ -64,12 +72,11 @@ payment.setNameFirst("John");
 payment.setNameLast("Doe");
 payment.setEmailAddress("john.doe@example.com");
 
-PayFastResponse response = client.createPayment(payment);
-if (response.isSuccess()) {
-    // Redirect user to response.getPaymentUrl()
-    String paymentUrl = response.getPaymentUrl();
-    // Also saves HTML form as payfast_payment_form.html
-}
+// Create payment form data with all fields and signature
+PayFastFormData formData = service.createPaymentFormData(payment);
+```
+
+## Demo Application
 ```
 
 ### 3. Subscription Payment
@@ -95,48 +102,6 @@ if (response.isSuccess()) {
 }
 ```
 
-### 4. ITN (Instant Transaction Notification) Handling
-```java
-import com.recceda.payfast.model.NotificationData;
-import java.util.Map;
-
-// In your notification endpoint (e.g., Spring Controller)
-@PostMapping("/payfast/notify")
-public ResponseEntity<String> handleITN(HttpServletRequest request) {
-    try {
-        // Extract parameters from the ITN request
-        Map<String, String> itnParams = new HashMap<>();
-        request.getParameterMap().forEach((key, values) -> {
-            if (values.length > 0) {
-                itnParams.put(key, values[0]);
-            }
-        });
-        
-        // Validate the ITN
-        if (client.getITNHandler().validateITN(itnParams)) {
-            // Parse the notification data
-            NotificationData data = client.getITNHandler().parseNotification(itnParams);
-            
-            // Process the payment confirmation
-            String paymentStatus = data.getPaymentStatus();
-            String paymentId = data.getMPaymentId();
-            BigDecimal amount = data.getAmountGross();
-            
-            // Your business logic here
-            processPaymentConfirmation(paymentId, paymentStatus, amount);
-            
-            return ResponseEntity.ok("OK");
-        } else {
-            log.warn("Invalid ITN received");
-            return ResponseEntity.badRequest().body("Invalid ITN");
-        }
-    } catch (Exception e) {
-        log.error("ITN processing failed", e);
-        return ResponseEntity.status(500).body("Error processing ITN");
-    }
-}
-```
-
 ## Demo Application
 
 Run the included demo to see the SDK in action:
@@ -159,7 +124,7 @@ The SDK provides comprehensive error handling with specific exceptions:
 import com.recceda.payfast.exception.*;
 
 try {
-    PayFastResponse response = client.createPayment(payment);
+    PayFastFormData formData = service.createPaymentFormData(payment);
 } catch (ConfigurationException e) {
     // Invalid configuration (missing merchant ID/key)
     log.error("Configuration error: {}", e.getMessage());
@@ -246,13 +211,17 @@ For production use:
    );
    ```
 3. **Configure proper return URLs** for your domain
-4. **Set up ITN endpoint** for payment confirmations
-5. **Use HTTPS** for all URLs
+4. **Use HTTPS** for all URLs
 
 ## Support
 
 - **PayFast Documentation**: https://developers.payfast.co.za/
 - **PayFast Support**: https://www.payfast.co.za/support/
+
+## Author
+
+**Mike Chiloane**  
+Email: [mike@mikechiloane.co.za](mailto:mike@mikechiloane.co.za)
 
 ## License
 
