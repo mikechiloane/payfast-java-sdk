@@ -1,5 +1,10 @@
 package com.recceda.payfast;
 
+import java.math.BigDecimal;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.recceda.payfast.config.PayFastConfig;
 import com.recceda.payfast.exception.PayFastException;
 import com.recceda.payfast.exception.ValidationException;
@@ -7,10 +12,6 @@ import com.recceda.payfast.handler.ITNHandler;
 import com.recceda.payfast.model.PayFastFormData;
 import com.recceda.payfast.model.PaymentRequest;
 import com.recceda.payfast.util.SignatureUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
 
 public class PayFastService {
     private static final Logger log = LoggerFactory.getLogger(PayFastService.class);
