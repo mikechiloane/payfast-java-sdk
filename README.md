@@ -9,11 +9,11 @@ A comprehensive Java SDK for PayFast payment gateway integration with proper sig
 
 ## Features
 
-- ✅ **One-off payments** - Single payment transactions
-- ✅ **Automatic signature generation** - Python-compatible URL encoding
-- ✅ **Sandbox/Production modes** - Easy environment switching
-- ✅ **Comprehensive error handling** - Specific exceptions for different scenarios
-- ✅ **Full PayFast compliance** - Matches official implementation
+- **One-off payments** - Single payment transactions
+- **Automatic signature generation** - Python-compatible URL encoding
+- **Sandbox/Production modes** - Easy environment switching
+- **Comprehensive error handling** - Specific exceptions for different scenarios
+- **Full PayFast compliance** - Matches official implementation
 
 ## Installation
 
@@ -95,12 +95,7 @@ subscription.setRecurringAmount(5000);                     // 50.00 in cents
 subscription.setFrequency(3);                             // Monthly (1=Weekly, 2=BiWeekly, 3=Monthly, 4=Quarterly, 5=BiAnnual, 6=Annual)
 subscription.setCycles(12);                               // 12 months (0 = infinite)
 
-PayFastResponse response = client.createSubscription(subscription);
-if (response.isSuccess()) {
-    String subscriptionUrl = response.getPaymentUrl();
-    // Also saves HTML form as payfast_subscription_form.html
-}
-```
+
 
 ## Demo Application
 
@@ -113,7 +108,6 @@ mvn exec:java -Dexec.mainClass="com.recceda.App"
 This will:
 - Create a sample payment form
 - Create a sample subscription form  
-- Generate HTML files you can open in your browser
 - Display PayFast sandbox URLs for testing
 
 ## Error Handling
