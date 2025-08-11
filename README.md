@@ -92,8 +92,11 @@ subscription.setMPaymentId("SUB-" + System.currentTimeMillis());
 // Subscription specific settings
 subscription.setSubscriptionType("1");                     // Subscription
 subscription.setRecurringAmount(5000);                     // 50.00 in cents
-subscription.setFrequency(3);                             // Monthly (1=Weekly, 2=BiWeekly, 3=Monthly, 4=Quarterly, 5=BiAnnual, 6=Annual)
+subscription.setFrequency(3);                             // Monthly (1=Daily, 2=Weekly, 3=Monthly, 4=Quarterly, 5=Biannually, 6=Annual)
 subscription.setCycles(12);                               // 12 months (0 = infinite)
+
+// Create subscription form data with all fields and signature
+PayFastFormData formData = service.createSubscriptionFormData(subscription);
 
 
 
@@ -140,18 +143,37 @@ try {
 ## Configuration Options
 
 ### PayFast Frequency Values
-- `1` - Weekly
-- `2` - Bi-weekly  
+
+- `1` - Daily
+- `2` - Weekly  
 - `3` - Monthly
 - `4` - Quarterly
-- `5` - Bi-annually
-- `6` - Annually
+- `5` - Biannually
+- `6` - Annual
 
 ### PayFast Test Credentials
-For sandbox testing, use these credentials:
+
+For sandbox testing, you can use these default credentials:
 - **Merchant ID**: `10000100`
 - **Merchant Key**: `46f0cd694581a`
 - **Sandbox URL**: `https://sandbox.payfast.co.za/eng/process`
+
+**⚠️ Important for Subscriptions:** The default sandbox credentials don't have a passphrase set. For subscription testing, you need to **create your own sandbox account**.
+
+#### Generate Your Own Sandbox Credentials
+1. Go to [PayFast Sandbox](https://sandbox.payfast.co.za)
+2. Register for a free sandbox account with your email
+3. Login to your sandbox dashboard
+4. Navigate to **Settings** → **Merchant Details** to get your unique:
+   - Merchant ID
+   - Merchant Key
+5. Set a **Salt Passphrase** in **Settings** → **Account Information** (required for subscriptions)
+
+**Benefits of your own sandbox account:**
+- Test subscriptions with proper passphrase
+- View transaction history and ITN logs
+- Test subscription management features
+- More realistic testing environment
 
 ## Technical Implementation
 
@@ -214,7 +236,7 @@ For production use:
 
 ## Author
 
-**Mike Chiloane**  
+**Mike Chiloane**
 Email: [mike@mikechiloane.co.za](mailto:mike@mikechiloane.co.za)
 
 ## License

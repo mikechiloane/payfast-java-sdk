@@ -9,6 +9,9 @@ public class SubscriptionRequest extends PaymentRequest {
     private Integer recurringAmount;
     private Integer frequency;
     private Integer cycles;
+    private Boolean subscriptionNotifyEmail;
+    private Boolean subscriptionNotifyWebhook;
+    private Boolean subscriptionNotifyBuyer;
     
     public String getSubscriptionType() { return subscriptionType; }
     public void setSubscriptionType(String subscriptionType) { this.subscriptionType = subscriptionType; }
@@ -28,4 +31,13 @@ public class SubscriptionRequest extends PaymentRequest {
     
     public Integer getCycles() { return cycles; }
     public void setCycles(Integer cycles) { this.cycles = cycles; }
+    
+    public Boolean getSubscriptionNotifyEmail() { return subscriptionNotifyEmail; }
+    public void setSubscriptionNotifyEmail(Boolean subscriptionNotifyEmail) { this.subscriptionNotifyEmail = subscriptionNotifyEmail; }
+    
+    public Boolean getSubscriptionNotifyWebhook() { return subscriptionNotifyWebhook; }
+    public void setSubscriptionNotifyWebhook(Boolean subscriptionNotifyWebhook) { this.subscriptionNotifyWebhook = subscriptionNotifyWebhook; }
+    
+    public Boolean getSubscriptionNotifyBuyer() { return subscriptionNotifyBuyer; }
+    public void setSubscriptionNotifyBuyer(Boolean subscriptionNotifyBuyer) { this.subscriptionNotifyBuyer = subscriptionNotifyBuyer; }
 }
