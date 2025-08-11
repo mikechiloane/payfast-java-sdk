@@ -22,7 +22,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>com.recceda</groupId>
     <artifactId>payfast-java-sdk</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
 </dependency>
 ```
 
@@ -150,15 +150,6 @@ try {
 - `4` - Quarterly
 - `5` - Biannually
 - `6` - Annual
-
-### PayFast Test Credentials
-
-For sandbox testing, you can use these default credentials:
-- **Merchant ID**: `10000100`
-- **Merchant Key**: `46f0cd694581a`
-- **Sandbox URL**: `https://sandbox.payfast.co.za/eng/process`
-
-**⚠️ Important for Subscriptions:** The default sandbox credentials don't have a passphrase set. For subscription testing, you need to **create your own sandbox account**.
 
 #### Generate Your Own Sandbox Credentials
 1. Go to [PayFast Sandbox](https://sandbox.payfast.co.za)
